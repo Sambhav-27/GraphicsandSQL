@@ -1,0 +1,28 @@
+use db_world;
+ drop table if exists db_world.sailors;
+
+create table sailors(
+	sid int not null auto_increment primary key,
+	sname varchar(20),
+	rating int,
+	dob date
+);
+
+insert into sailors(sname, rating, dob) values ('Casey', 9, 20120618), ('john', 8, 19960819), ('Napolean', 10, 18880812),
+	('Columbous', 6, 17671212), ('Sambhav', 10, 19960527), ('Intersect', 2, 20121231),
+	('jack', 0, 20000101), ('alice', 3, 18181118), ('Bob', 6, 19960321);
+
+create table boats(
+	bid int not null auto_increment primary key,
+	bname varchar(20),
+	color varchar(10)
+);
+
+insert into  boats(bname, color) values ('boat1', 'red'), ('boat2', 'yellow'), ('boat3', 'green'),
+	('boat4', 'white'), ('boat5', 'black');
+
+
+
+select * from sailors;
+select * from boats;
+

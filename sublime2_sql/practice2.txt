@@ -1,0 +1,201 @@
+use db_world;
+--  drop table if exists db_world.customer_1;
+--  drop table if exists db_world.customer_2;
+--  drop table if exists db_world.product;
+--  drop table if exists db_world.invoice;
+--  drop table if exists db_world.vendor;
+
+
+
+-- create table customer_1(
+-- 	cust_num int not null auto_increment primary key,
+-- 	cust_lname varchar(10),
+-- 	cust_fname varchar(10),
+-- 	cust_balance int
+-- );
+
+-- insert into customer_1(cust_lname, cust_fname, cust_balance) values ('John', 'Casey', 2000), ('Agent', 'Fulcrum', 0),
+-- 	('Charles', 'Carmichael', 10);
+
+-- create table customer_2(
+-- 	cust_num int not null auto_increment primary key,
+-- 	cust_lname varchar(10),
+-- 	cust_fname varchar(10),
+-- 	cust_balance int
+-- );
+
+-- insert into customer_2(cust_lname, cust_fname, cust_balance) values ('David', 'warner', 200), ('Steve', 'smith', 0),
+-- 	('Charles', 'Carmichael', 10);
+	
+
+-- create table product(
+-- 	prod_num int not null auto_increment primary key,
+-- 	prod_name varchar(20),
+-- 	price int
+-- );
+
+-- insert into product(prod_name, price) values ('soap', 10), ('sledge hammer', 600), ('toothpaste', 200),
+-- 	('13-q2/p2', 300), ('23109-h', 1000);
+
+
+-- create table vendor(
+-- 	id int not null auto_increment primary key,
+-- 	location varchar(15),
+-- 	name varchar(15),
+-- 	address varchar(20)
+-- );
+
+
+-- create table invoice(
+-- 	inv_num int not null auto_increment primary key,
+-- 	prod_num int,
+-- 	unit_sold int,
+-- 	cust_num int,
+-- 	inv_date date,
+-- 	ven_id int,
+-- 	amount int,
+-- 	foreign key(ven_id) references vendor(id)
+-- );
+
+-- insert into invoice(prod_num, unit_sold, cust_num, inv_date,  amount) values (1, 2, 3, 20170101,  20),
+-- 	(2, 4, 3, 20160101,  2400), (3, 3, 2, 20160101,  2400), (1, 2, 3,  20160101,  2400), (4, 1, 3, 20160101,  2400);
+
+
+-- insert into vendor(location, name, address) values ('Florida', 'Buy more', 'Burbank'), ('Texas', 'sharmaJi', 'Austin');
+select * from customer_1;
+select * from customer_2;
+select * from product;
+select * from invoice;
+select * from vendor;
+
+-- (1)
+-- select *
+-- from customer_1
+-- union all
+-- select *
+-- from customer_2;
+
+-- (2)
+-- select *
+-- from customer_1 c1
+-- NATURAL JOIN 
+-- customer_2 c2;
+
+-- (3)
+-- select *
+-- from customer_2
+-- NATURAL LEFT JOIN
+-- customer_1
+-- where customer_1.cust_fname is null;
+
+-- (4)
+-- select inv_num, (select avg(amount) from invoice) as average_amount,
+--  ((select avg(amount) from invoice)-amount) as deviation
+-- from invoice;
+
+-- (5)
+-- alter table customer_1 add dob date;
+-- alter table customer_1 add age int;
+-- update customer_1
+-- 	set dob = 19690315
+-- where cust_num=1;
+-- update customer_1
+-- 	set dob = 19771222
+-- where cust_num=2;
+-- -- select * from customer_1;
+
+-- -- -- (6)
+-- update customer_1
+-- 	set age = YEAR(current_timestamp) - YEAR(dob);
+-- select * from customer_1;
+
+-- (7) sale is credit sale
+-- delimiter //
+-- create trigger mytrigger3 before insert on invoice
+-- FOR EACH ROW
+-- when( NEW.amount>10);
+-- begin
+-- 	-- IF (NEW.amount>10) THEN
+
+-- 	-- IF ((select customer_1.cust_balance from customer_1 where customer_1.cust_num = NEW.cust_num;)>0) THEN	
+
+-- 	update customer_1
+-- 	set customer_1.cust_balance = customer_1.cust_balance-NEW.amount
+-- 	where customer_1.cust_num = NEW.cust_num;
+-- 	-- END IF;
+-- END; //
+-- delimiter ;
+
+-- insert into invoice(cust_num, amount) values (4, -100);
+-- select * from invoice;
+-- select * from customer_1;
+
+-- (8)
+-- select prod_name
+-- from product
+-- where product.price > (select avg(price) from product);
+
+-- (9)
+-- select concat(cust_fname, ' ', cust_lname)  as name
+-- from customer_1
+-- where cust_num in (
+-- select cust_num
+-- from product,invoice
+-- where (product.prod_name like '%hammer' or product.prod_name like '%saw')
+-- and product.prod_num = invoice.prod_num
+-- );
+
+-- (10) not done
+-- select prod_num, unit_sold
+-- from invoice
+-- where unit_sold > (select avg(unit_sold) from invoice);
+
+
+-- where units_sold > (select avg(units_sold) from temp);
+
+-- (11 and 12)question not according to table
+-- select * from product
+-- where price > all (select )
+
+-- (13)
+-- select concat(cust_lname, "  ", cust_fname) as name from customer_1
+-- where cust_num in (select cust_num from invoice
+-- where prod_num in (select prod_num from product where prod_name ='13-q2/p2'));
+
+-- (14)
+-- select prod_num, prod_name, price, (select avg(price) from product) as average_price, 
+-- price-(select avg(price) from product) as deviation
+-- from product;
+
+-- (15)
+-- select distinct(prod_num) from invoice
+-- where unit_sold >(
+-- select avg(unit_sold) from invoice);
+
+
+
+
+
+-- delimiter //
+-- create trigger mytrigger4 before insert on invoice
+-- FOR EACH ROW
+-- begin
+	
+-- 	if (NEW.ven_id not in (select id from vendor))
+-- 	THEN
+-- 	SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO = 30001, MESSAGE_TEXT = 'Can\'t update record. Foreign key updates to child table restricted!';
+
+
+-- 	END IF;
+-- END; //
+-- delimiter ;
+
+
+insert into invoice(prod_num, unit_sold, cust_num, inv_date, ven_id, amount) values (1, 2, 3, 20170101,10,  20);
+select * from invoice;
+
+
+
+
+
+

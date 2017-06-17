@@ -1,0 +1,165 @@
+-- create database projectdb;
+use projectdb;
+-- drop table if exists projectdb.seats_required;
+-- drop table if exists projectdb.seats_confirmed;
+-- drop table if exists projectdb.seats_cancelled;
+-- drop table if exists projectdb.seats_waiting;
+-- drop table if exists projectdb.seats_no;
+-- drop table if exists projectdb.ticket;
+-- drop table if exists projectdb.address;
+-- drop table if exists projectdb.user; 
+-- drop table if exists projectdb.schedule;
+-- drop table if exists projectdb.fares;
+-- drop table if exists projectdb.train;
+-- drop table if exists projectdb.station;
+
+
+
+-- create table user(
+-- 		uid int not null auto_increment primary key,
+-- 		email varchar(20) unique not null,
+-- 		dob date,		
+-- 		phn varchar(12),
+-- 		fname varchar(20),
+-- 		lname varchar(20),
+-- 		password varchar(20)
+-- );
+
+-- create table address(
+-- 		uid int not null auto_increment primary key,
+-- 		hno int,
+-- 		strtno int,
+-- 		city varchar(20),
+-- 		pin varchar(7),
+-- 		foreign key (uid) references user(uid)
+-- );
+
+-- create table station(
+-- 		stno int not null auto_increment primary key,
+-- 		stname varchar(20)
+-- );
+
+-- create table train(
+-- 		trainno varchar(10) primary key,
+-- 		src int,
+-- 		des int,
+-- 		ac1seats int,
+-- 		ac2seats int,
+-- 		ac3seats int,
+-- 		sleeper1seats int,
+-- 		sleeper2seats int,
+-- 		foreign key (src) references station(stno),
+-- 		foreign key (des) references station(stno)
+-- );
+
+
+
+-- create table schedule(
+-- 		trainno varchar(10),
+-- 		stno int,
+-- 		arrivaltime time,
+-- 		departuretime time,
+-- 		primary key(trainno, stno),
+-- 		foreign key (trainno) references train(trainno),
+-- 		foreign key (stno) references station(stno)
+-- );
+
+-- create table ticket(
+-- 		pnr varchar(11) not null  primary key,
+-- 		uid int,
+-- 		trainno varchar(10),
+-- 		src_u int,
+-- 		des_u int,
+-- 		totalfare int,
+-- 		depart_date date,
+-- 		depart_time time,
+-- 		foreign key (uid) references user(uid),
+-- 		foreign key (trainno) references train(trainno),
+-- 		foreign key (src_u) references station(stno),
+-- 		foreign key (des_u) references station(stno)
+
+-- );
+
+-- create table seats_required(
+-- 		class varchar(20),
+-- 		pnr varchar(11),
+-- 		count int,
+-- 		primary key(class, pnr),
+-- 		foreign key (pnr) references ticket(pnr)
+-- );
+
+-- create table seats_confirmed(
+-- 		class varchar(20),
+-- 		pnr varchar(11),
+-- 		seats_no varchar(5),
+-- 		primary key(class, pnr),
+-- 		foreign key (pnr) references ticket(pnr)
+-- );
+
+-- create table seats_waiting(
+-- 		class varchar(20),
+-- 		pnr varchar(11),
+-- 		waitno int,
+-- 		primary key(class, pnr),
+-- 		foreign key (pnr) references ticket(pnr)
+-- );
+
+-- create table fares(
+-- 		src int,
+-- 		des int,
+-- 		trainno varchar(10),
+-- 		class varchar(20),
+-- 		price int,
+-- 		primary key(src, des, trainno),
+-- 		foreign key (src) references station(stno),
+-- 		foreign key (des) references station(stno),
+-- 		foreign key (trainno) references train(trainno)
+-- );
+
+
+
+
+-- insert into user(uid, email, dob,  phn, fname, lname, password) values (1, 'test@gmail.com', 19960527,  '9878789', 'Steven', 'smith', 'password'),
+--  (2, 'test3@gmail.com', 19990202,  '23424', 'david', 'warner', 'password');
+-- insert into address(uid, hno, strtno, city, pin) values (1, 12, 12, 'delhi', '110045');
+
+-- insert into station values (1, 'new delhi'), (2, 'faislabad'), (3, 'Samantha');
+-- insert into train values ('dl912', 1, 2, 10,10,10,20,20), ('mi123', 2, 1, 11,11,11,22,22);
+
+-- insert into schedule values ('dl912', 1, 150202, 130101), ('mi123', 1, 110202, 130101), ('dl912', 2, 150202, 130101),('dl912', 3, 150202, 130101);
+-- insert into ticket values ('1234', 1, 'dl912', 1, 2, 1000, 20170404, 151515), ('231', 1, 'dl912', 1, 2, 1000, 20170404, 151515);
+
+-- insert into seats_confirmed values ('AC1tier', '1234', 'D34'), ("Sleeper2tier", '231', 'D39');
+-- insert into seats_waiting values ('AC1tier', '1234', 10), ('Sleeper2tier', '231', 20), ('Sleeper2tier', '1234', 30);
+
+-- insert into fares values (1, 2, 'dl912', 'ac1seats', 300), (1, 3, 'dl912', 'ac2seats', 400), (1, 2, 'mi123', 'sleeper2seats', 100);
+
+-- select * from station;
+
+
+-- select * from train;
+
+-- select * from train
+-- where src =(select stno from station where stname='new delhi') and des =(select stno from station where stname='faislabad');
+
+-- select trainno,stno,departuretime from schedule
+-- where trainno in (select trainno from train
+-- where src =(select stno from station where stname='new delhi') and des =(select stno from station where stname='faislabad'))
+-- 	and stno=(select stno from station where stname='new delhi');
+
+
+
+-- select trainno,arrivaltime from schedule
+-- where trainno in (select trainno from train
+-- where src =(select stno from station where stname='new delhi') and des =(select stno from station where stname='faislabad'))
+-- 	and stno=(select stno from station where stname='faislabad');
+
+-- select * from fares;
+
+-- " insert into user (email, dob, phn, fname, lname, password) values (\'" + eid2  +"\'," + dob2 + ",\'" + phn2 + "\', \'" + fname2 +"\', \'" + lname2 + "\', \'" + pswd3 +"\');";
+
+
+select * from user;
+select * from ticket;
+select * from seats_required;
+

@@ -1,0 +1,179 @@
+use db_world;
+--  drop table if exists db_world.sailors;
+--  drop table if exists db_world.boats;
+--  drop table if exists db_world.reserves;
+
+-- create table sailors(
+-- 	sid int not null auto_increment primary key,
+-- 	sname varchar(20),
+-- 	rating int,
+-- 	dob date
+-- );
+
+-- insert into sailors(sname, rating, dob) values ('Casey', 9, 20120618), ('john', 8, 19960819), ('Napolean', 10, 18880812),
+-- 	('Columbous', 6, 17671212), ('Sambhav', 10, 19960527), ('Intersect', 2, 20121231),
+-- 	('jack', 0, 20000101), ('alice', 3, 18181118), ('Horatio', 6, 19960321);
+
+-- create table boats(
+-- 	bid int not null auto_increment primary key,
+-- 	bname varchar(20),
+-- 	color varchar(10)
+-- );
+
+-- insert into  boats(bname, color) values ('boat1', 'red'), ('boat2', 'yellow'), ('boat3', 'green'),
+-- 	('boat4', 'white'), ('boat5', 'black');
+
+-- create table reserves(
+-- 	sid int,
+-- 	bid int,
+-- 	day date,
+-- 	primary key(sid, bid, day)
+-- );
+
+-- insert into reserves(sid, bid, day) values (1, 1, 20121121), (1, 2, 20131111),
+-- 	(3, 5, 20170101), (9, 1, 20161231), (3, 4, 19960303), (1, 3, 20170105);
+
+
+ select * from sailors;
+ select * from boats;
+ select * from reserves;
+
+-- (1)
+-- select sailors.sid, sailors.sname
+-- from sailors
+-- where sailors.sid in
+-- (select sid
+-- from (select sid, count(sid>0)
+-- from reserves 
+-- group by sid) 
+-- as temp);
+
+
+
+-- (2)
+-- select sid
+-- from reserves
+-- where reserves.bid in 
+-- (select bid
+-- from  boats
+-- where boats.color in ('red','green'));
+
+-- (3)
+-- select sid
+-- from(
+-- select sid
+-- from reserves
+-- where reserves.bid in
+-- (select bid from boats where boats.color in ('red', 'green'))
+-- )
+-- as temp
+-- group by sid
+-- having count(sid)>1;
+
+
+-- (5) 3 and 4 are same
+-- select sid
+-- from sailors
+-- where sid not in(select sid 
+-- from reserves);
+
+-- (6)
+-- select sname
+-- from sailors
+-- where sid in
+-- (select sid from reserves where bid=1);
+
+-- (8) 6 and 7 are same
+-- select sname
+-- from sailors
+-- where rating > some(select rating
+-- from sailors
+-- where sname = 'Horatio'
+-- );
+
+-- (9)
+-- select sname from sailors
+-- where sid in (
+-- select sid
+-- from reserves
+-- group by sid
+-- having count(sid)> (select count(*) from reserves)
+-- );
+
+-- (10) age to be calculated
+-- select sname, (YEAR(CURRENT_TIMESTAMP) - YEAR(dob)) as years,
+--  abs((MONTH(CURRENT_TIMESTAMP) - MONTH(dob))) as months
+-- from sailors
+-- where dob in
+-- (select min(dob)
+-- from sailors)
+
+-- (11)
+-- select rating, min(YEAR(CURRENT_TIMESTAMP) - YEAR(dob)) as youngest_age
+-- from sailors
+-- group by rating
+-- having count(rating)>1;
+
+-- (12)
+-- select rating 
+-- from sailors
+-- where age in(
+-- select age
+-- from (select avg((YEAR(CURRENT_TIMESTAMP) - YEAR(dob))) as age
+-- from sailors
+-- group by rating) as T
+-- where age <100
+-- )
+-- ;
+
+-- (13)
+-- delimiter //
+-- create trigger mytrigger after insert on sailors
+-- 	for each row
+-- 	begin
+-- 	set @t1 = (select count(sid) from sailors where YEAR(CURRENT_TIMESTAMP)-YEAR(dob)>17);
+-- 	end; //
+-- delimiter ;
+-- insert into sailors(sname, rating, dob) values('Ram', 8, 19950101);
+-- select @t1;
+
+
+-- (3 alternative and good way)
+
+-- select sid
+-- from sailors
+
+-- natural join
+
+-- (select sid
+-- from reserves, boats
+-- where reserves.bid= boats.bid and boats.color='red') as temp1
+
+-- natural join
+
+-- (select sid
+-- from reserves, boats
+-- where reserves.bid= boats.bid and boats.color='green') as temp2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,146 @@
+-- create database ques3;
+use ques3
+ drop table if exists ques3.department;
+ drop table if exists ques3.location;
+ drop table if exists ques3.employee;
+ drop table if exists ques3.job;
+ drop table if exists ques3.works;
+
+create table location(
+	lid int not null auto_increment primary key,
+	rgroup varchar(15)
+);
+
+create table department(
+	did int not null auto_increment primary key,
+	name varchar(15),
+	lid int,
+	foreign key (lid) references location(lid)
+);
+
+create table job(
+	jid int not null auto_increment primary key,
+	fun varchar(20)
+);
+
+create table employee(
+	eid int not null auto_increment primary key,
+	lname varchar(10),
+	fname varchar(10),
+	mname varchar(10),
+	jid int,
+	mid int,
+	hire_date date,
+	salary int,
+	foreign key (jid) references job(jid)
+);
+
+create table works(
+	eid int,
+	did int,
+	since date,
+	primary key(eid, did, since)
+);
+
+
+insert into location(rgroup) values ('North'), ('south'),("East"), ('Central'), ('south');
+insert into department(name, lid) values ('finance', 1), ('HR', 2),('Executive',3);
+insert into job(fun) values ('Managing'), ('Teaching'), ('Training'), ('Clerk');
+insert into employee(fname,mname,lname, jid,mid, hire_date,salary) values ('Charles','Irwin','Bortwoski',1,3,19850303,100000), ('Chandler', 'Muriel', 'Bing', 4,1,19960527, 100),
+	('Farhan','quereshi','btech',3,2,19970527,2000);
+insert into works(eid,did,since) values (1,1,19850303), (2,2,19960527),(1,2,19850404), (2,1,19850404),(2,2,19850404);
+select * from location;
+select * from department;
+select * from job;
+select * from employee;
+select * from works;
+
+-- (1)
+-- select concat(employee.fname, ' ', employee.mname, ' ', employee.lname) as name
+-- from works,employee
+-- where works.eid = employee.eid and employee.salary>3500
+-- and works.did =1;
+
+-- (2)
+-- select count(*)
+-- from employee
+-- where YEAR(employee.hire_date)=1985 and MONTH(employee.hire_date)=03;
+
+-- (3)
+-- select did
+-- from (select did,count(*) as emp_count
+-- from works
+-- where YEAR(since)=1985 and DAY(since)=04
+-- group by did) as temp
+
+-- where temp.emp_count>=2;
+
+-- (4)
+-- select *
+-- from employee e1
+-- where (2) = (
+-- 			select count(e2.salary)
+-- 			from employee e2
+-- 			where e2.salary >= e1.salary
+-- 			);
+
+
+-- select * from employee
+-- order by salary DESC limit 0,1
+
+
+
+
+
+
+-- (5)
+-- update employee,job
+-- 	set employee.salary =employee.salary*1.1
+-- where job.fun='Clerk' and job.jid = employee.jid;
+
+-- select * from employee;
+
+-- (6)
+-- select distinct(department.did), department.name
+-- from department,works
+-- where department.did not in (select works.did from works);
+
+-- (7) Not Done
+-- select fname,salary
+-- from employee,works
+-- group by works.did;
+
+-- (8)
+-- select mid, count(eid) as employees_working_under
+-- from employee
+-- group by mid;
+
+-- (9)
+-- select e1.eid, concat(e1.fname, " ",e1.lname)as ename, e2.eid as manager_id,
+--  concat(e2.fname, " ",e2.lname) as manger_name
+-- from employee e1 
+-- inner join employee e2
+-- on (e1.mid=e2.eid)
+
+-- (10)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
